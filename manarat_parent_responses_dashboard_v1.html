@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>منارات | لوحة ردود الأهالي</title>
+  <style>
+    :root{
+      --teal:#0d5c63;
+      --teal2:#117780;
+      --dark:#062f34;
+      --cream:#fbf7ec;
+      --gold:#c99b32;
+      --line:#dce9e7;
+      --muted:#68787b;
+      --green:#166534;
+      --yellow:#9a5c00;
+      --blue:#075985;
+      --red:#991b1b;
+      --shadow:0 18px 45px rgba(13,92,99,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;max-width:100%;overflow-x:hidden}
+    body{
+      font-family:Tahoma, Arial, sans-serif;
+      color:#143c40;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(201,155,50,.16), transparent 28%),
+        radial-gradient(circle at 90% 15%, rgba(17,119,128,.15), transparent 30%),
+        linear-gradient(180deg,#fbf7ec,#f4fbfa 70%,#ffffff);
+      min-height:100vh;
+    }
+    .wrap{max-width:1180px;margin:auto;padding:22px 14px 40px}
+    .login{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+    }
+    .login-card{
+      width:100%;max-width:470px;background:rgba(255,255,255,.82);border:1px solid var(--line);
+      border-radius:30px;box-shadow:var(--shadow);padding:28px 22px;text-align:center;backdrop-filter:blur(10px);
+    }
+    .logo{width:138px;height:138px;border-radius:34px;background:white;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line);box-shadow:0 12px 28px rgba(13,92,99,.09);padding:10px}
+    .logo img{width:100%;height:100%;object-fit:contain;display:block}
+    h1{margin:8px 0 6px;color:var(--teal);font-size:30px}
+    p{margin:0;color:var(--muted);line-height:1.8}
+    label{display:block;text-align:right;margin:14px 0 7px;color:#315b5f;font-weight:900;font-size:13px}
+    input,select{
+      width:100%;border:1px solid var(--line);border-radius:16px;padding:13px 14px;font-size:16px;background:#fff;color:#143c40;outline:none;
+    }
+    input:focus,select:focus{border-color:var(--teal2);box-shadow:0 0 0 4px rgba(17,119,128,.12)}
+    .btn{
+      border:0;border-radius:16px;padding:13px 18px;font-weight:950;font-size:15px;cursor:pointer;
+      background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;box-shadow:0 12px 24px rgba(13,92,99,.15);
+      transition:.18s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.soft{background:#fff;color:var(--teal);border:1px solid var(--line);box-shadow:none}
+    .btn.warn{background:linear-gradient(135deg,#a86c00,#d59d32)}
+    .btn.full{width:100%;margin-top:14px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:26px;padding:14px;box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand .logo{width:84px;height:84px;border-radius:24px;margin:0}
+    .brand h1{font-size:26px;margin:0 0 4px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+    .stat{border-radius:22px;padding:16px 14px;min-height:112px;box-shadow:0 10px 26px rgba(13,92,99,.07);border:1px solid transparent;position:relative;overflow:hidden}
+    .stat:after{content:"";position:absolute;left:-30px;bottom:-35px;width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,.34)}
+    .stat .l{font-size:13px;font-weight:950;margin-bottom:7px}
+    .stat .n{font-size:36px;font-weight:1000;line-height:1;direction:ltr}
+    .stat .d{font-size:11px;margin-top:8px;line-height:1.6;font-weight:800;opacity:.8}
+    .stat.total{background:linear-gradient(135deg,#edfafa,#fff);color:var(--teal);border-color:#cce8e6}
+    .stat.thanks{background:linear-gradient(135deg,#f0fdf4,#fff);color:var(--green);border-color:#bbf7d0}
+    .stat.call{background:linear-gradient(135deg,#eff6ff,#fff);color:var(--blue);border-color:#bfdbfe}
+    .stat.meeting{background:linear-gradient(135deg,#fff7ed,#fff);color:#9a3412;border-color:#fed7aa}
+    .panel{background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:26px;padding:16px;box-shadow:var(--shadow);margin-top:14px}
+    .filters{display:grid;grid-template-columns:1.3fr 1fr 1fr auto;gap:10px;align-items:end}
+    .table-wrap{overflow:auto;border-radius:20px;border:1px solid var(--line);margin-top:14px;background:white}
+    table{width:100%;border-collapse:collapse;min-width:850px}
+    th,td{padding:12px 11px;text-align:right;border-bottom:1px solid #edf2f2;font-size:14px;vertical-align:top}
+    th{background:#f5fbfa;color:var(--teal);font-weight:950;position:sticky;top:0;z-index:1}
+    td{line-height:1.7}
+    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900}
+    .pill.thanks{background:#f0fdf4;color:var(--green)}
+    .pill.call{background:#eff6ff;color:var(--blue)}
+    .pill.meeting{background:#fff7ed;color:#9a3412}
+    .pill.none{background:#f8fafc;color:#64748b}
+    .code{direction:ltr;text-align:left;display:inline-block;font-weight:900;color:#345}
+    .empty-box{padding:30px;text-align:center;color:var(--muted);font-weight:850;line-height:1.9}
+    .status{display:none;margin-top:12px;padding:12px;border-radius:16px;font-weight:800;line-height:1.8}
+    .status.show{display:block}
+    .status.ok{background:#eefdf5;color:#166534;border:1px solid #bbf7d0}
+    .status.err{background:#fff1f2;color:#991b1b;border:1px solid #fecdd3}
+    .small{font-size:12px;color:var(--muted);line-height:1.8;margin-top:8px}
+    @media(max-width:850px){
+      .top{display:block;text-align:center}
+      .brand{justify-content:center;margin-bottom:12px;flex-direction:column}
+      .actions{justify-content:center}
+      .cards{grid-template-columns:1fr 1fr}
+      .filters{grid-template-columns:1fr}
+      .btn{width:100%}
+    }
+    @media(max-width:520px){
+      .cards{grid-template-columns:1fr}
+      h1{font-size:25px}
+      .wrap{padding:14px 10px 30px}
+    }
+  </style>
+</head>
+<body>
+  <section class="login" id="loginScreen">
+    <div class="login-card">
+      <div class="logo"><img src="https://drive.google.com/thumbnail?id=1EI6B0MP87SezQUyxnVVlAKprrb5v7BWx&sz=w1000" alt="شعار مركز منارات"></div>
+      <h1>لوحة ردود الأهالي</h1>
+      <p>متابعة طلبات التواصل والاجتماعات والردود الخاصة بالتقارير التربوية.</p>
+      <label for="password">كلمة المرور</label>
+      <input id="password" type="password" placeholder="أدخل كلمة المرور">
+      <button class="btn full" id="loginBtn">دخول اللوحة</button>
+      <div id="loginStatus" class="status"></div>
+      <div class="small">هذه لوحة داخلية لمركز منارات.</div>
+    </div>
+  </section>
+
+  <main class="wrap" id="app" style="display:none">
+    <div class="top">
+      <div class="brand">
+        <div class="logo"><img src="https://drive.google.com/thumbnail?id=1EI6B0MP87SezQUyxnVVlAKprrb5v7BWx&sz=w1000" alt="شعار مركز منارات"></div>
+        <div>
+          <h1>لوحة ردود الأهالي</h1>
+          <p>طلبات التواصل والاجتماعات الخاصة بالتقرير التربوي</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn soft" id="refreshBtn">تحديث البيانات</button>
+        <button class="btn warn" id="exportBtn">تحميل CSV</button>
+        <button class="btn soft" id="logoutBtn">خروج</button>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="stat total">
+        <div class="l">إجمالي الردود</div>
+        <div class="n" id="statTotal">0</div>
+        <div class="d">كل أولياء الأمور الذين أرسلوا ردًا</div>
+      </div>
+      <div class="stat thanks">
+        <div class="l">شكر فقط</div>
+        <div class="n" id="statThanks">0</div>
+        <div class="d">قرأ التقرير ولا يطلب تواصلًا</div>
+      </div>
+      <div class="stat call">
+        <div class="l">مكالمة / مراسلة</div>
+        <div class="n" id="statCall">0</div>
+        <div class="d">يحتاج متابعة تربوية عن بعد</div>
+      </div>
+      <div class="stat meeting">
+        <div class="l">اجتماع تربوي</div>
+        <div class="n" id="statMeeting">0</div>
+        <div class="d">يرغب بلقاء وجاهي أو عن بعد</div>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="filters">
+        <div>
+          <label for="searchInput">بحث باسم الطالب أو الكود</label>
+          <input id="searchInput" type="text" placeholder="مثال: غيث أو MN-XJ">
+        </div>
+        <div>
+          <label for="typeFilter">نوع الرد</label>
+          <select id="typeFilter">
+            <option value="all">كل الردود</option>
+            <option value="thanks">شكر فقط</option>
+            <option value="call">مكالمة / مراسلة</option>
+            <option value="meeting">اجتماع تربوي</option>
+            <option value="no_response">لم يرد بعد</option>
+          </select>
+        </div>
+        <div>
+          <label for="categoryFilter">الفئة</label>
+          <select id="categoryFilter">
+            <option value="all">كل الفئات</option>
+            <option value="فئة 1 - 4">فئة 1 - 4</option>
+            <option value="فئة 5 - 7">فئة 5 - 7</option>
+            <option value="فئة 8 - 11">فئة 8 - 11</option>
+          </select>
+        </div>
+        <button class="btn" id="applyBtn">تطبيق</button>
+      </div>
+      <div id="mainStatus" class="status"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الطالب</th>
+              <th>الكود</th>
+              <th>الفئة</th>
+              <th>نوع الرد</th>
+              <th>نص الرد</th>
+              <th>آخر تحديث</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6"><div class="empty-box">جارِ تحميل الردود...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+<script>
+  const PASSWORD = "MANARAT2026";
+  const SUPABASE_URL = "https://dbydrbhbjhngpenkptwj.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_HF-kdGNzwQQ0LyjScyD1ig_q3jAR8z8";
+
+  const byId = id => document.getElementById(id);
+  const safe = v => String(v ?? "").replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  let allRows = [];
+
+  function show(el, msg, type="ok"){ el.className = "status show " + type; el.textContent = msg; }
+  function hide(el){ el.className = "status"; el.textContent = ""; }
+
+  async function rpc(name, body={}){
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+      method:"POST",
+      headers:{
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type":"application/json",
+        "Cache-Control":"no-store"
+      },
+      body: JSON.stringify(body)
+    });
+    const txt = await res.text();
+    let data = null;
+    try{ data = txt ? JSON.parse(txt) : null; }catch(e){ data = txt; }
+    if(!res.ok) throw new Error((data && (data.message || data.details)) || "تعذر الاتصال بقاعدة البيانات.");
+    return data || [];
+  }
+
+  function login(){
+    const pwd = byId("password").value.trim();
+    if(pwd !== PASSWORD){ show(byId("loginStatus"), "كلمة المرور غير صحيحة.", "err"); return; }
+    sessionStorage.setItem("manarat_parent_dashboard_logged","1");
+    byId("loginScreen").style.display = "none";
+    byId("app").style.display = "block";
+    loadData();
+  }
+
+  function logout(){
+    sessionStorage.removeItem("manarat_parent_dashboard_logged");
+    location.reload();
+  }
+
+  function normalizeType(t){
+    if(t === "thanks") return ["شكر فقط","thanks"];
+    if(t === "call") return ["مكالمة / مراسلة","call"];
+    if(t === "meeting") return ["اجتماع تربوي","meeting"];
+    return ["لم يرد بعد","none"];
+  }
+
+  function formatDate(v){
+    if(!v) return "—";
+    try{
+      const d = new Date(v);
+      return d.toLocaleString("ar-JO", {dateStyle:"medium", timeStyle:"short"});
+    }catch(e){ return v; }
+  }
+
+  async function loadData(){
+    hide(byId("mainStatus"));
+    byId("tbody").innerHTML = `<tr><td colspan="6"><div class="empty-box">جارِ تحميل الردود...</div></td></tr>`;
+    try{
+      allRows = await rpc("get_parent_responses_dashboard", {});
+      updateStats();
+      render();
+      show(byId("mainStatus"), "تم تحديث البيانات بنجاح.", "ok");
+    }catch(e){
+      byId("tbody").innerHTML = `<tr><td colspan="6"><div class="empty-box">تعذر تحميل البيانات. تأكد من تشغيل ملف SQL الخاص باللوحة.</div></td></tr>`;
+      show(byId("mainStatus"), e.message || "حدث خطأ أثناء تحميل البيانات.", "err");
+    }
+  }
+
+  function updateStats(){
+    const responded = allRows.filter(r => r.response_type && r.response_type !== "no_response");
+    byId("statTotal").textContent = responded.length;
+    byId("statThanks").textContent = allRows.filter(r => r.response_type === "thanks").length;
+    byId("statCall").textContent = allRows.filter(r => r.response_type === "call").length;
+    byId("statMeeting").textContent = allRows.filter(r => r.response_type === "meeting").length;
+  }
+
+  function getFiltered(){
+    const q = byId("searchInput").value.trim().toLowerCase();
+    const type = byId("typeFilter").value;
+    const cat = byId("categoryFilter").value;
+
+    return allRows.filter(r => {
+      const matchQ = !q || String(r.student_name || "").toLowerCase().includes(q) || String(r.code || "").toLowerCase().includes(q);
+      const matchType = type === "all" || r.response_type === type;
+      const matchCat = cat === "all" || r.category === cat;
+      return matchQ && matchType && matchCat;
+    });
+  }
+
+  function render(){
+    const rows = getFiltered();
+    if(!rows.length){
+      byId("tbody").innerHTML = `<tr><td colspan="6"><div class="empty-box">لا توجد نتائج مطابقة للفلاتر الحالية.</div></td></tr>`;
+      return;
+    }
+    byId("tbody").innerHTML = rows.map(r => {
+      const [label, cls] = normalizeType(r.response_type);
+      return `<tr>
+        <td><strong>${safe(r.student_name || "—")}</strong></td>
+        <td><span class="code">${safe(r.code || "—")}</span></td>
+        <td>${safe(r.category || "—")}</td>
+        <td><span class="pill ${cls}">${label}</span></td>
+        <td>${safe(r.response_label || "لم يرسل ولي الأمر ردًا بعد")}</td>
+        <td>${formatDate(r.updated_at || r.created_at)}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function exportCSV(){
+    const rows = getFiltered();
+    const header = ["student_name","code","category","response_type","response_label","updated_at"];
+    const csv = [header.join(",")].concat(rows.map(r => header.map(k => `"${String(r[k] ?? "").replace(/"/g,'""')}"`).join(","))).join("\n");
+    const blob = new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "manarat-parent-responses.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  byId("loginBtn").addEventListener("click", login);
+  byId("password").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
+  byId("logoutBtn").addEventListener("click", logout);
+  byId("refreshBtn").addEventListener("click", loadData);
+  byId("exportBtn").addEventListener("click", exportCSV);
+  byId("applyBtn").addEventListener("click", render);
+  byId("searchInput").addEventListener("input", render);
+  byId("typeFilter").addEventListener("change", render);
+  byId("categoryFilter").addEventListener("change", render);
+
+  if(sessionStorage.getItem("manarat_parent_dashboard_logged") === "1"){
+    byId("loginScreen").style.display = "none";
+    byId("app").style.display = "block";
+    loadData();
+  }
+</script>
+</body>
+</html>
