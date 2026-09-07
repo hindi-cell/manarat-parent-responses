@@ -1,0 +1,82 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
+
+const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=(v='')=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lines=v=>String(v||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+let projects=[],settings={},session=null;
+
+function message(t,type=''){const el=$('#auth-message');el.textContent=t;el.className='form-message '+type;}
+function showAuth(){ $('#auth-view').classList.remove('hidden'); $('#admin-view').classList.add('hidden'); }
+function showAdmin(){ $('#auth-view').classList.add('hidden'); $('#admin-view').classList.remove('hidden'); $('#admin-email').textContent=session?.user?.email||''; }
+async function isAdmin(){const {data,error}=await sb.rpc('is_farahidi_admin');return !error&&data===true;}
+
+async function boot(){
+  const {data:{session:s}}=await sb.auth.getSession(); session=s;
+  if(session&&await isAdmin()){showAdmin();await loadAll();}else showAuth();
+}
+$('#login-form').addEventListener('submit',async e=>{
+  e.preventDefault();message('جاري تسجيل الدخول…');
+  const email=$('#login-email').value.trim(),password=$('#login-password').value;
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error)return message('تعذر تسجيل الدخول: '+error.message,'error');
+  session=data.session;
+  if(!(await isAdmin())){await sb.auth.signOut();return message('هذا الحساب لا يملك صلاحية إدارة المنصة.','error');}
+  showAdmin();await loadAll();
+});
+$('#logout-btn').addEventListener('click',async()=>{await sb.auth.signOut();location.reload();});
+
+async function loadAll(){
+  const [{data:p,error:pe},{data:s}]=await Promise.all([
+    sb.from('farahidi_projects').select('*').order('display_order',{ascending:true}),
+    sb.from('farahidi_site_settings').select('*').eq('id',1).maybeSingle()
+  ]);
+  if(pe)return alert('تعذر تحميل المشاريع: '+pe.message);
+  projects=p||[]; settings=s||{}; renderAll();
+}
+function renderAll(){renderOverview();renderProjects();renderRegistration();renderMedia();renderSettings();}
+function statusLabel(s){return {open:'متاح',closed:'مغلق',soon:'قريبًا',full:'مكتمل'}[s]||s;}
+
+function renderOverview(){
+ const visible=projects.filter(p=>p.is_visible).length,open=projects.filter(p=>p.registration_status==='open').length;
+ $('#tab-overview').innerHTML=`<div class="admin-page-head"><div><span class="section-kicker">نظرة عامة</span><h1>مرحبًا بك في لوحة الإدارة</h1><p>ملخص سريع للمشاريع وحالة التسجيل.</p></div><button class="btn btn-primary" data-new-project>+ مشروع جديد</button></div><div class="stats-grid"><div class="stat-card"><strong>${projects.length}</strong><span>إجمالي المشاريع</span></div><div class="stat-card"><strong>${visible}</strong><span>مشاريع ظاهرة</span></div><div class="stat-card"><strong>${open}</strong><span>تسجيل متاح</span></div><div class="stat-card"><strong>${projects.length-visible}</strong><span>مشاريع مخفية</span></div></div><div class="dashboard-panel"><h3>المشاريع</h3>${projects.map(p=>`<div class="quick-row"><div><strong>${esc(p.name)}</strong><small>${p.is_visible?'ظاهر':'مخفي'}</small></div><span class="pill ${p.registration_status==='open'?'pill-open':'pill-closed'}">${statusLabel(p.registration_status)}</span></div>`).join('')}</div>`;
+}
+function renderProjects(){
+ $('#tab-projects').innerHTML=`<div class="admin-page-head"><div><span class="section-kicker">المشاريع</span><h1>إدارة المشاريع</h1><p>عدّل المحتوى والحالة والترتيب والظهور.</p></div><button class="btn btn-primary" data-new-project>+ مشروع جديد</button></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>المشروع</th><th>الحالة</th><th>الظهور</th><th>الترتيب</th><th>إجراءات</th></tr></thead><tbody>${projects.map((p,i)=>`<tr><td><div class="project-cell"><div class="mini-logo">${p.logo_url?.startsWith('http')?`<img src="${esc(p.logo_url)}" alt="">`:''}</div><strong>${esc(p.name)}</strong></div></td><td><span class="pill ${p.registration_status==='open'?'pill-open':'pill-closed'}">${statusLabel(p.registration_status)}</span></td><td><button class="mini-toggle ${p.is_visible?'on':''}" data-visible="${p.id}"><span></span>${p.is_visible?'ظاهر':'مخفي'}</button></td><td><div class="order-controls"><button data-move="up" data-id="${p.id}" ${i===0?'disabled':''}>↑</button><b>${p.display_order||i+1}</b><button data-move="down" data-id="${p.id}" ${i===projects.length-1?'disabled':''}>↓</button></div></td><td><div class="row-actions"><button class="icon-btn" data-edit="${p.id}">تعديل</button><a class="icon-btn" href="index.html?preview=${p.id}" target="_blank">معاينة</a><button class="icon-btn danger" data-delete="${p.id}">حذف</button></div></td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderRegistration(){
+ $('#tab-registration').innerHTML=`<div class="admin-page-head"><div><span class="section-kicker">التسجيل</span><h1>حالة التسجيل</h1><p>غيّر حالة التسجيل وروابط النماذج بسرعة.</p></div></div><div class="registration-admin-grid">${projects.map(p=>`<article class="reg-admin-card"><div><strong>${esc(p.name)}</strong><small>${esc(p.registration_url||'لا يوجد رابط تسجيل')}</small></div><label>الحالة<select data-reg-status="${p.id}"><option value="open" ${p.registration_status==='open'?'selected':''}>متاح</option><option value="closed" ${p.registration_status==='closed'?'selected':''}>مغلق</option><option value="soon" ${p.registration_status==='soon'?'selected':''}>قريبًا</option><option value="full" ${p.registration_status==='full'?'selected':''}>مكتمل</option></select></label><label>رابط التسجيل<input type="url" data-reg-url="${p.id}" value="${esc(p.registration_url||'')}"></label><button class="btn btn-outline btn-block" data-save-reg="${p.id}">حفظ التسجيل</button></article>`).join('')}</div>`;
+}
+async function renderMedia(){
+ const el=$('#tab-media');el.innerHTML=`<div class="admin-page-head"><div><span class="section-kicker">الوسائط</span><h1>مكتبة الوسائط</h1><p>ارفع الصور لاستخدامها في المشاريع.</p></div><label class="btn btn-primary upload-button">رفع صور<input id="media-upload" type="file" accept="image/*" multiple hidden></label></div><div id="media-grid" class="media-grid"><div class="loading-card">جاري التحميل…</div></div>`;
+ $('#media-upload').addEventListener('change',uploadMedia);
+ const {data,error}=await sb.storage.from('farahidi-media').list('',{limit:100,sortBy:{column:'created_at',order:'desc'}}); const g=$('#media-grid'); if(!g)return;
+ if(error){g.innerHTML='<div class="empty-state">تعذر تحميل الوسائط.</div>';return;}
+ const files=(data||[]).filter(f=>f.name&&!f.name.endsWith('/'));
+ g.innerHTML=files.length?files.map(f=>{const u=sb.storage.from('farahidi-media').getPublicUrl(f.name).data.publicUrl;return `<figure class="media-card"><img src="${esc(u)}" alt=""><figcaption>${esc(f.name)}</figcaption><button class="icon-btn" data-copy="${esc(u)}">نسخ الرابط</button></figure>`}).join(''):'<div class="empty-state">لا توجد وسائط بعد.</div>';
+}
+function renderSettings(){
+ $('#tab-settings').innerHTML=`<div class="admin-page-head"><div><span class="section-kicker">إعدادات المنصة</span><h1>الهوية والتواصل</h1><p>عدّل النصوص الأساسية وبيانات التواصل.</p></div></div><form id="settings-form" class="editor-form compact-form"><label>عنوان المنصة<input name="site_title" value="${esc(settings.site_title||'مشاريع مؤسسة الفراهيدي')}"></label><label class="full">الوصف الرئيسي<textarea name="site_subtitle" rows="3">${esc(settings.site_subtitle||'')}</textarea></label><label>اسم المؤسسة في التذييل<input name="footer_name" value="${esc(settings.footer_name||'')}</label><label>الهاتف<input name="contact_phone" value="${esc(settings.contact_phone||'')}"></label><label>البريد الإلكتروني<input name="contact_email" type="email" value="${esc(settings.contact_email||'')}"></label><label>رابط واتساب<input name="whatsapp_url" type="url" value="${esc(settings.whatsapp_url||'')}"></label><label class="full">نص التذييل<textarea name="footer_text" rows="3">${esc(settings.footer_text||'')}</textarea></label><div class="full"><button class="btn btn-primary" type="submit">حفظ الإعدادات</button></div></form>`;
+ $('#settings-form').addEventListener('submit',saveSettings);
+}
+
+function openEditor(p=null){
+ const x=p||{name:'',slug:'',short_description:'',full_description:'',idea:'',target_audience:'',age_range:'',grades:'',duration:'',schedule:'',location:'',price:'',registration_url:'',registration_status:'closed',registration_button_text:'التسجيل الآن',logo_url:'',cover_image_url:'',additional_info:'',objectives:[],features:[],is_visible:true,display_order:(projects.at(-1)?.display_order||0)+1};
+ $('#editor-content').innerHTML=`<div class="editor-head"><span class="section-kicker">${p?'تعديل مشروع':'مشروع جديد'}</span><h2>${p?esc(p.name):'إضافة مشروع جديد'}</h2></div><form id="project-form" class="editor-form"><input type="hidden" name="id" value="${esc(x.id||'')}"><label>اسم المشروع<input name="name" required value="${esc(x.name)}"></label><label>الرابط المختصر Slug<input name="slug" required value="${esc(x.slug)}"></label><label class="full">الوصف المختصر<textarea name="short_description" rows="2">${esc(x.short_description||'')}</textarea></label><label class="full">الوصف الكامل<textarea name="full_description" rows="4">${esc(x.full_description||'')}</textarea></label><label class="full">فكرة المشروع<textarea name="idea" rows="3">${esc(x.idea||'')}</textarea></label><label>الفئة المستهدفة<input name="target_audience" value="${esc(x.target_audience||'')}"></label><label>الأعمار<input name="age_range" value="${esc(x.age_range||'')}"></label><label>الصفوف<input name="grades" value="${esc(x.grades||'')}"></label><label>مدة البرنامج<input name="duration" value="${esc(x.duration||'')}"></label><label class="full">الأيام والأوقات<input name="schedule" value="${esc(x.schedule||'')}"></label><label>المكان<input name="location" value="${esc(x.location||'')}"></label><label>الرسوم<input name="price" value="${esc(x.price||'')}"></label><label class="full">الأهداف — كل هدف في سطر<textarea name="objectives" rows="4">${esc((x.objectives||[]).join('\n'))}</textarea></label><label class="full">المزايا — كل ميزة في سطر<textarea name="features" rows="4">${esc((x.features||[]).join('\n'))}</textarea></label><label>حالة التسجيل<select name="registration_status"><option value="open" ${x.registration_status==='open'?'selected':''}>متاح</option><option value="closed" ${x.registration_status==='closed'?'selected':''}>مغلق</option><option value="soon" ${x.registration_status==='soon'?'selected':''}>قريبًا</option><option value="full" ${x.registration_status==='full'?'selected':''}>مكتمل</option></select></label><label>نص زر التسجيل<input name="registration_button_text" value="${esc(x.registration_button_text||'التسجيل الآن')}"></label><label class="full">رابط التسجيل<input name="registration_url" type="url" value="${esc(x.registration_url||'')}"></label><label class="full">رابط الشعار<input name="logo_url" type="url" value="${esc(x.logo_url?.startsWith('http')?x.logo_url:'')}"></label><label class="full">رابط صورة الغلاف<input name="cover_image_url" type="url" value="${esc(x.cover_image_url||'')}"></label><label>الترتيب<input name="display_order" type="number" min="1" value="${x.display_order||1}"></label><label class="switch-field"><span>إظهار المشروع للزوار</span><input name="is_visible" type="checkbox" ${x.is_visible?'checked':''}></label><label class="full">معلومات إضافية<textarea name="additional_info" rows="3">${esc(x.additional_info||'')}</textarea></label><div class="full editor-actions"><button class="btn btn-primary" type="submit">حفظ المشروع</button><button class="btn btn-outline" type="button" data-close-editor>إلغاء</button></div></form>`;
+ $('#project-form').addEventListener('submit',saveProject); const m=$('#editor-modal');m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+}
+function closeEditor(){const m=$('#editor-modal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
+async function saveProject(e){e.preventDefault();const f=new FormData(e.currentTarget),id=f.get('id');const payload={name:f.get('name').trim(),slug:f.get('slug').trim(),short_description:f.get('short_description').trim(),full_description:f.get('full_description').trim(),idea:f.get('idea').trim(),target_audience:f.get('target_audience').trim(),age_range:f.get('age_range').trim(),grades:f.get('grades').trim(),duration:f.get('duration').trim(),schedule:f.get('schedule').trim(),location:f.get('location').trim(),price:f.get('price').trim(),objectives:lines(f.get('objectives')),features:lines(f.get('features')),registration_status:f.get('registration_status'),registration_url:f.get('registration_url').trim()||null,registration_button_text:f.get('registration_button_text').trim()||'التسجيل الآن',logo_url:f.get('logo_url').trim()||null,cover_image_url:f.get('cover_image_url').trim()||null,display_order:Number(f.get('display_order')||1),is_visible:f.get('is_visible')==='on',additional_info:f.get('additional_info').trim()};const q=id?sb.from('farahidi_projects').update(payload).eq('id',id):sb.from('farahidi_projects').insert(payload);const {error}=await q;if(error)return alert(error.message);closeEditor();await loadAll();}
+async function saveSettings(e){e.preventDefault();const p=Object.fromEntries(new FormData(e.currentTarget));p.id=1;const {error}=await sb.from('farahidi_site_settings').upsert(p);if(error)return alert(error.message);settings={...settings,...p};alert('تم حفظ الإعدادات.');}
+async function uploadMedia(e){const files=[...(e.target.files||[])];for(const file of files){const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const name=`media-${Date.now()}-${crypto.randomUUID()}.${ext}`;const {error}=await sb.storage.from('farahidi-media').upload(name,file,{contentType:file.type});if(error)alert('تعذر رفع '+file.name+': '+error.message);}renderMedia();}
+async function toggleVisible(id){const p=projects.find(x=>x.id===id);if(!p)return;const {error}=await sb.from('farahidi_projects').update({is_visible:!p.is_visible}).eq('id',id);if(error)return alert(error.message);await loadAll();}
+async function saveRegistration(id){const st=$(`[data-reg-status="${id}"]`).value,url=$(`[data-reg-url="${id}"]`).value.trim()||null;const {error}=await sb.from('farahidi_projects').update({registration_status:st,registration_url:url}).eq('id',id);if(error)return alert(error.message);await loadAll();}
+async function moveProject(id,dir){const i=projects.findIndex(x=>x.id===id),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=projects.length)return;const a=projects[i],b=projects[j];await Promise.all([sb.from('farahidi_projects').update({display_order:b.display_order}).eq('id',a.id),sb.from('farahidi_projects').update({display_order:a.display_order}).eq('id',b.id)]);await loadAll();}
+async function delProject(id){const p=projects.find(x=>x.id===id);if(!p||!confirm(`هل تريد حذف «${p.name}» نهائيًا؟`))return;const {error}=await sb.from('farahidi_projects').delete().eq('id',id);if(error)return alert(error.message);await loadAll();}
+
+document.addEventListener('click',e=>{const tab=e.target.closest('[data-tab]');if(tab){$$('.nav-item').forEach(x=>x.classList.toggle('active',x===tab));$$('.admin-tab').forEach(x=>x.classList.remove('active'));$('#tab-'+tab.dataset.tab).classList.add('active');return;}if(e.target.closest('[data-new-project]'))openEditor();const ed=e.target.closest('[data-edit]');if(ed)openEditor(projects.find(p=>p.id===ed.dataset.edit));const vis=e.target.closest('[data-visible]');if(vis)toggleVisible(vis.dataset.visible);const mv=e.target.closest('[data-move]');if(mv)moveProject(mv.dataset.id,mv.dataset.move);const del=e.target.closest('[data-delete]');if(del)delProject(del.dataset.delete);const sr=e.target.closest('[data-save-reg]');if(sr)saveRegistration(sr.dataset.saveReg);const cp=e.target.closest('[data-copy]');if(cp){navigator.clipboard.writeText(cp.dataset.copy);cp.textContent='تم النسخ';}if(e.target.closest('[data-close-editor]'))closeEditor();});
+$('#editor-modal').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeEditor();});
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeEditor();});
+
+await boot();
