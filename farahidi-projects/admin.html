@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f5f61" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>لوحة إدارة مشاريع الفراهيدي</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="admin-body">
+  <main id="auth-view" class="auth-shell">
+    <section class="auth-card">
+      <div class="auth-logo brand-logo-exact" role="img" aria-label="شعار مركز منارات"></div>
+      <span class="eyebrow">لوحة الإدارة</span>
+      <h1>إدارة مشاريع المؤسسة</h1>
+      <p id="auth-help">سجّل الدخول للوصول إلى المشاريع والتسجيل والمحتوى.</p>
+      <form id="login-form" class="form-stack">
+        <label>البريد الإلكتروني<input id="login-email" type="email" autocomplete="email" required /></label>
+        <label>كلمة المرور<input id="login-password" type="password" autocomplete="current-password" minlength="6" required /></label>
+        <button class="btn btn-primary btn-block" type="submit">تسجيل الدخول</button>
+      </form>
+      <form id="setup-form" class="form-stack hidden">
+        <div class="setup-note">هذه المنصة لم يُنشأ لها مدير بعد. أنشئ حساب المالك الأول مرة واحدة فقط.</div>
+        <label>بريد المالك<input id="setup-email" type="email" autocomplete="email" required /></label>
+        <label>كلمة المرور<input id="setup-password" type="password" autocomplete="new-password" minlength="8" required /></label>
+        <button class="btn btn-primary btn-block" type="submit">إنشاء حساب المالك</button>
+      </form>
+      <div id="auth-message" class="form-message" aria-live="polite"></div>
+      <a href="index.html" class="text-link">العودة إلى واجهة الزوار</a>
+    </section>
+  </main>
+
+  <div id="admin-view" class="admin-shell hidden">
+    <header class="admin-topbar">
+      <div class="admin-brand">
+        <div class="admin-logo brand-logo-exact" role="img" aria-label="شعار مركز منارات"></div>
+        <div><strong>لوحة إدارة مشاريعنا</strong><small id="admin-email"></small></div>
+      </div>
+      <div class="admin-actions">
+        <a class="btn btn-soft" href="index.html" target="_blank">عرض الموقع</a>
+        <button id="logout-btn" class="btn btn-outline" type="button">تسجيل الخروج</button>
+      </div>
+    </header>
+
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <nav id="admin-nav">
+          <button class="nav-item active" data-tab="overview">نظرة عامة</button>
+          <button class="nav-item" data-tab="projects">المشاريع</button>
+          <button class="nav-item" data-tab="registration">التسجيل</button>
+          <button class="nav-item" data-tab="media">الوسائط</button>
+          <button class="nav-item" data-tab="settings">إعدادات المنصة</button>
+        </nav>
+      </aside>
+
+      <section class="admin-main">
+        <div id="tab-overview" class="admin-tab active"></div>
+        <div id="tab-projects" class="admin-tab"></div>
+        <div id="tab-registration" class="admin-tab"></div>
+        <div id="tab-media" class="admin-tab"></div>
+        <div id="tab-settings" class="admin-tab"></div>
+      </section>
+    </div>
+  </div>
+
+  <div id="editor-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-editor></div>
+    <div class="modal-panel modal-panel-wide" role="dialog" aria-modal="true">
+      <button class="modal-close" type="button" data-close-editor aria-label="إغلاق">×</button>
+      <div id="editor-content"></div>
+    </div>
+  </div>
+
+  <script type="module" src="assets/brand.js"></script>
+  <script type="module" src="assets/admin.js"></script>
+</body>
+</html>
