@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f5f61" />
+  <title>مشاريع مؤسسة الفراهيدي</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-ornament hero-ornament-top"></div>
+      <div class="hero-ornament hero-ornament-bottom"></div>
+      <div class="hero-inner container">
+        <div class="brand-logo brand-logo-exact" role="img" aria-label="شعار مركز منارات"></div>
+        <span class="eyebrow">البوابة الرسمية للمشاريع</span>
+        <h1 id="site-title">مشاريع مؤسسة الفراهيدي</h1>
+        <p id="site-subtitle">برامج ومشاريع تربوية وتعليمية متخصصة لبناء الطالب وتنمية مهاراته.</p>
+        <div class="hero-divider"><span></span><i></i><span></span></div>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      <section class="section-head">
+        <div>
+          <span class="section-kicker">مشاريعنا</span>
+          <h2>اختر المشروع المناسب</h2>
+          <p>اطّلع على التفاصيل، وتحقق من حالة التسجيل، ثم انتقل مباشرة إلى نموذج التسجيل عند فتحه.</p>
+        </div>
+        <div class="status-legend" aria-label="دليل حالة التسجيل">
+          <span><b class="dot dot-open"></b> متاح</span>
+          <span><b class="dot dot-closed"></b> غير متاح</span>
+        </div>
+      </section>
+
+      <section id="projects-grid" class="projects-grid" aria-live="polite">
+        <div class="loading-card">جاري تحميل المشاريع…</div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <strong id="footer-name">مؤسسة الفراهيدي للتعليم والتدريب</strong>
+          <p id="footer-text">تعليمٌ يصنع أثرًا، وتربيةٌ تبني إنسانًا.</p>
+        </div>
+        <div id="footer-contact" class="footer-contact"></div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="details-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="إغلاق">×</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script type="module" src="assets/brand.js"></script>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>
