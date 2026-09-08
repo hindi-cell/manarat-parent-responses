@@ -1,0 +1,2 @@
+Trigger Vercel production deployment after connecting GitHub and setting Root Directory to farahidi-projects.
+Date: 2026-09-08
