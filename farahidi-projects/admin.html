@@ -11,7 +11,7 @@
 <body class="admin-body">
   <main id="auth-view" class="auth-shell">
     <section class="auth-card">
-      <div class="auth-logo brand-logo-exact" role="img" aria-label="شعار مركز منارات"></div>
+      <img id="admin-login-logo" class="auth-logo" alt="شعار مركز منارات" />
       <span class="eyebrow">لوحة الإدارة</span>
       <h1>إدارة مشاريع المؤسسة</h1>
       <p id="auth-help">سجّل الدخول للوصول إلى المشاريع والتسجيل والمحتوى.</p>
@@ -34,7 +34,7 @@
   <div id="admin-view" class="admin-shell hidden">
     <header class="admin-topbar">
       <div class="admin-brand">
-        <div class="admin-logo brand-logo-exact" role="img" aria-label="شعار مركز منارات"></div>
+        <img id="admin-top-logo" class="admin-logo" alt="شعار مركز منارات" />
         <div><strong>لوحة إدارة مشاريعنا</strong><small id="admin-email"></small></div>
       </div>
       <div class="admin-actions">
@@ -72,7 +72,34 @@
     </div>
   </div>
 
-  <script type="module" src="assets/brand.js"></script>
+  <script>
+    (async function () {
+      const logos = [
+        document.getElementById('admin-login-logo'),
+        document.getElementById('admin-top-logo')
+      ].filter(Boolean);
+      try {
+        const files = [
+          'assets/logo-inline-v2/chunk-01.txt',
+          'assets/logo-inline-v2/chunk-02.txt',
+          'assets/logo-inline-v2/chunk-03.txt',
+          'assets/logo-inline-v2/chunk-04.txt',
+          'assets/logo-inline-v2/chunk-05.txt',
+          'assets/logo-inline-v2/chunk-06.txt',
+          'assets/logo-inline-v2/chunk-07.txt',
+          'assets/logo-inline-v2/chunk-08.txt'
+        ];
+        const responses = await Promise.all(files.map(file => fetch(file, { cache: 'no-store' })));
+        if (responses.some(response => !response.ok)) throw new Error('Missing logo chunk');
+        const parts = await Promise.all(responses.map(response => response.text()));
+        const logoSrc = 'data:image/webp;base64,' + parts.map(part => part.trim()).join('');
+        logos.forEach(img => { img.src = logoSrc; });
+      } catch (error) {
+        console.error('Manarat admin logo failed to load', error);
+        logos.forEach(img => { img.style.display = 'none'; });
+      }
+    })();
+  </script>
   <script type="module" src="assets/admin.js"></script>
 </body>
 </html>
