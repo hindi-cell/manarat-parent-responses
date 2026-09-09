@@ -1,0 +1,57 @@
+/* Additional ambient flashes across the full public site — subtle and decorative */
+.weekly-section,.main-content,.site-footer{position:relative;overflow:hidden;isolation:isolate}
+.weekly-section>.container,.main-content>* ,.site-footer>.container{position:relative;z-index:2}
+
+/* Weekly section: soft gold + teal breathing glows */
+.weekly-section::before,.weekly-section::after,
+.main-content::after,.site-footer::before{content:"";position:absolute;pointer-events:none;border-radius:50%;z-index:0}
+.weekly-section::before{width:230px;height:230px;top:-120px;left:-95px;background:radial-gradient(circle,rgba(216,164,59,.18) 0,rgba(216,164,59,.07) 34%,transparent 72%);animation:siteGlowBreath 9s ease-in-out infinite}
+.weekly-section::after{width:260px;height:260px;right:-135px;bottom:-150px;background:radial-gradient(circle,rgba(15,95,97,.18) 0,rgba(15,95,97,.06) 38%,transparent 73%);animation:siteGlowBreath 11s ease-in-out infinite reverse}
+
+/* Projects area: scattered small twinkles instead of one big glow */
+.main-content::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:
+ radial-gradient(circle at 8% 14%,rgba(216,164,59,.32) 0 2px,transparent 3px),
+ radial-gradient(circle at 92% 20%,rgba(15,95,97,.28) 0 2px,transparent 3px),
+ radial-gradient(circle at 15% 53%,rgba(15,95,97,.24) 0 1.5px,transparent 3px),
+ radial-gradient(circle at 87% 61%,rgba(216,164,59,.28) 0 2px,transparent 3px),
+ radial-gradient(circle at 34% 86%,rgba(216,164,59,.22) 0 1.5px,transparent 3px),
+ radial-gradient(circle at 68% 79%,rgba(15,95,97,.24) 0 1.5px,transparent 3px);
+ filter:drop-shadow(0 0 6px rgba(216,164,59,.16));animation:siteSparkleDrift 14s ease-in-out infinite}
+.main-content::after{width:310px;height:310px;left:46%;top:30%;transform:translateX(-50%);background:radial-gradient(circle,rgba(216,164,59,.06),rgba(15,95,97,.035) 40%,transparent 72%);animation:siteGlowBreath 12s ease-in-out infinite}
+
+/* Each project card gets a very light passing glint and one tiny pulse */
+.project-card{position:relative;isolation:isolate}
+.project-card::before{content:"";position:absolute;width:7px;height:7px;border-radius:50%;top:15px;right:16px;background:rgba(216,164,59,.58);box-shadow:0 0 11px rgba(216,164,59,.32);opacity:.35;z-index:3;pointer-events:none;animation:cardPulse 5.8s ease-in-out infinite}
+.project-card:nth-child(even)::before{right:auto;left:16px;background:rgba(15,95,97,.55);box-shadow:0 0 11px rgba(15,95,97,.28);animation-delay:-2.2s}
+.project-card::after{content:"";position:absolute;inset:-45% -85%;background:linear-gradient(110deg,transparent 43%,rgba(255,255,255,.14) 49%,rgba(216,164,59,.08) 51%,transparent 57%);transform:translateX(-38%) rotate(2deg);pointer-events:none;z-index:2;opacity:0;animation:cardGlint 10s ease-in-out infinite}
+.project-card:nth-child(2n)::after{animation-delay:-3.5s}.project-card:nth-child(3n)::after{animation-delay:-6.5s}
+.project-card-body,.project-logo-wrap{position:relative;z-index:1}
+
+/* Footer: a restrained glow so motion continues to the end of the page */
+.site-footer::before{width:300px;height:300px;right:-145px;top:-170px;background:radial-gradient(circle,rgba(216,164,59,.16),rgba(15,95,97,.08) 42%,transparent 72%);animation:siteGlowBreath 10s ease-in-out infinite}
+
+@keyframes siteGlowBreath{0%,100%{transform:scale(.93);opacity:.45}50%{transform:scale(1.08);opacity:.9}}
+@keyframes siteSparkleDrift{0%,100%{transform:translate3d(0,0,0);opacity:.68}35%{transform:translate3d(5px,-8px,0);opacity:1}70%{transform:translate3d(-4px,6px,0);opacity:.78}}
+@keyframes cardPulse{0%,100%{transform:scale(.72);opacity:.18}45%{transform:scale(1.18);opacity:.62}58%{transform:scale(.9);opacity:.38}}
+@keyframes cardGlint{0%,72%,100%{transform:translateX(-42%) rotate(2deg);opacity:0}78%{opacity:.55}88%{transform:translateX(42%) rotate(2deg);opacity:0}}
+
+@media(max-width:700px){
+ .weekly-section::before{width:150px;height:150px;top:-80px;left:-70px;opacity:.75}
+ .weekly-section::after{width:170px;height:170px;right:-95px;bottom:-95px;opacity:.72}
+ .main-content::before{opacity:.74;background:
+  radial-gradient(circle at 7% 10%,rgba(216,164,59,.40) 0 1.8px,transparent 3px),
+  radial-gradient(circle at 94% 22%,rgba(15,95,97,.35) 0 1.8px,transparent 3px),
+  radial-gradient(circle at 13% 48%,rgba(15,95,97,.31) 0 1.5px,transparent 3px),
+  radial-gradient(circle at 91% 59%,rgba(216,164,59,.35) 0 1.8px,transparent 3px),
+  radial-gradient(circle at 26% 85%,rgba(216,164,59,.28) 0 1.5px,transparent 3px),
+  radial-gradient(circle at 73% 78%,rgba(15,95,97,.30) 0 1.5px,transparent 3px)}
+ .main-content::after{width:200px;height:200px;left:60%;top:38%;opacity:.55}
+ .project-card::before{width:6px;height:6px;top:12px;right:13px}
+ .project-card:nth-child(even)::before{left:13px}
+ .project-card::after{animation-duration:12s;opacity:0}
+ .site-footer::before{width:200px;height:200px;right:-95px;top:-115px}
+}
+
+@media(prefers-reduced-motion:reduce){
+ .weekly-section::before,.weekly-section::after,.main-content::before,.main-content::after,.project-card::before,.project-card::after,.site-footer::before{animation:none!important}
+}
