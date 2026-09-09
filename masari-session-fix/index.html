@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#174C55">
+  <title>مساري | مركز منارات</title>
+  <link rel="stylesheet" href="https://thriving-salamander-129e1f.netlify.app/styles.css">
+</head>
+<body>
+<div id="app">
+<section id="loginView" class="view center-view">
+  <div class="brand-card">
+    <div class="brand-kicker">مركز منارات</div>
+    <h1>مَساري</h1>
+    <p>منصة المسار التربوي</p>
+  </div>
+  <form id="loginForm" class="card form-card">
+    <h2>تسجيل الدخول</h2>
+    <label>البريد الإلكتروني</label>
+    <input id="email" type="email" autocomplete="email" required>
+    <label>كلمة المرور</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button class="primary-btn" type="submit">دخول</button>
+    <div id="loginError" class="error"></div>
+  </form>
+</section>
+<section id="appView" class="view hidden">
+  <header class="topbar">
+    <div><div class="tiny">مركز منارات</div><h1>مَساري</h1></div>
+    <div class="top-actions"><span id="userLabel" class="muted"></span><button id="logoutBtn" class="ghost-btn">خروج</button></div>
+  </header>
+  <main class="shell">
+    <section id="staffHome" class="hidden">
+      <div class="hero-card"><div><div class="tiny light">مرحبًا</div><h2 id="staffName">—</h2><div id="staffRole" class="hero-sub">—</div></div><div class="stat"><span id="staffStudentCount">0</span><small>طالبًا</small></div></div>
+      <div id="adminStats" class="stats-grid hidden"></div>
+      <div class="section-title"><h3>المجموعات</h3><button id="refreshStaffBtn" class="text-btn">تحديث</button></div>
+      <div id="groupTabs" class="chips"></div><div id="studentsList" class="students-grid"></div><div id="emptyStaff" class="empty hidden">لا توجد مجموعات أو طلاب متاحون لهذا الحساب.</div>
+    </section>
+    <section id="guardianHome" class="hidden">
+      <div class="intro-card"><div class="tiny light">بوابة ولي الأمر</div><h2>رحلة أبنائكم في منارات</h2><p>نشارككم ما تم اعتماده ونشره من مسار الطالب، دون الملاحظات الداخلية للكادر.</p></div>
+      <div class="section-title"><h3>الأبناء</h3></div><div id="childrenList" class="children-grid"></div><div id="emptyGuardian" class="empty hidden">لا يوجد أبناء مرتبطون بهذا الحساب.</div>
+    </section>
+    <section id="studentWorkspace" class="hidden">
+      <button id="backBtn" class="back-btn">← العودة</button>
+      <div class="student-head card"><div><span id="stagePill" class="stage-pill">—</span><h2 id="studentName">—</h2><div id="studentCode" class="muted">—</div></div></div>
+      <div id="staffTabs" class="tabs scroll-tabs hidden"><button class="tab active" data-tab="overview">نظرة عامة</button><button class="tab" data-tab="timeline">الرحلة</button><button class="tab" data-tab="notes">الملاحظات</button><button class="tab" data-tab="sessions">جلسات المسار</button><button class="tab" data-tab="learning">التعلّم</button><button class="tab" data-tab="achievements">الإنجازات</button><button class="tab" data-tab="report">التقرير</button></div>
+      <div id="guardianTabs" class="tabs hidden"><button class="tab active" data-tab="guardian-report">التقرير</button><button class="tab" data-tab="timeline">الرحلة</button></div>
+      <div id="tab-overview" class="tab-panel hidden"><div class="card info-grid"><div><span>نقطة القوة</span><strong id="strengthFocus">—</strong></div><div><span>نقطة البناء</span><strong id="growthFocus">—</strong></div><div><span>هدف الطالب</span><strong id="studentGoal">—</strong></div><div><span>التوصية الحالية</span><strong id="currentRec">—</strong></div></div><button id="editPathBtn" class="secondary-btn full">تعديل بوصلة الطالب</button><div class="section-title"><h3>المحاور السبعة</h3></div><div id="outcomesList" class="outcomes"></div></div>
+      <div id="tab-timeline" class="tab-panel hidden"><div class="section-title"><h3>رحلة الطالب في منارات</h3></div><div id="timeline" class="timeline"></div></div>
+      <div id="tab-notes" class="tab-panel hidden"><div class="section-title"><h3>الملاحظات</h3><div class="row-actions"><select id="noteFilter" class="mini-select"><option value="">الكل</option><option value="strength">قوة ظهرت</option><option value="progress">تقدم</option><option value="follow_up">يحتاج متابعة</option></select><button id="newObservationBtn" class="text-btn">+ إضافة</button></div></div><div id="notesList" class="list"></div></div>
+      <div id="tab-sessions" class="tab-panel hidden"><div class="section-title"><h3>جلسات المسار</h3><button id="newSessionBtn" class="text-btn">+ إضافة</button></div><div id="sessionsList" class="list"></div></div>
+      <div id="tab-learning" class="tab-panel hidden"><div class="section-title"><h3>الكتب والمواد</h3><button id="newLearningBtn" class="text-btn">+ إضافة</button></div><div id="learningList" class="list"></div></div>
+      <div id="tab-achievements" class="tab-panel hidden"><div class="section-title"><h3>الإنجازات والمسؤوليات</h3><button id="newAchievementBtn" class="text-btn">+ إضافة</button></div><div id="achievementsList" class="list"></div></div>
+      <div id="tab-report" class="tab-panel hidden"><div class="card padded"><div class="section-title no-margin"><h3>التقرير الفصلي</h3><span id="reportStatus" class="badge">مسودة</span></div><form id="reportForm" class="stack"><label>أبرز ما تحقق</label><textarea id="reportHighlights" rows="4"></textarea><label>ما يزال قيد البناء</label><textarea id="reportGrowth" rows="4"></textarea><label>صوت الطالب</label><textarea id="reportVoice" rows="3"></textarea><label>توصية المسار القادمة</label><textarea id="reportRec" rows="4"></textarea><button class="primary-btn" type="submit">حفظ المسودة</button><button id="publishReportBtn" class="secondary-btn hidden" type="button">اعتماد ونشر التقرير</button><div id="reportMsg" class="success"></div><div id="reportErr" class="error"></div></form></div></div>
+      <div id="tab-guardian-report" class="tab-panel hidden"><div id="noPublishedReport" class="notice hidden">لا يوجد تقرير منشور لهذا الفصل حتى الآن.</div><div id="guardianReportContent" class="hidden"><div class="card report-block"><div class="eyebrow">أبرز ما تحقق</div><p id="gHighlights">—</p></div><div class="card report-block"><div class="eyebrow">ما نواصل بناءه</div><p id="gGrowth">—</p></div><div class="card report-block"><div class="eyebrow">صوت الطالب</div><blockquote id="gVoice">—</blockquote></div><div class="card report-block"><div class="eyebrow">توصية المسار القادمة</div><p id="gRec">—</p></div><div class="section-title"><h3>المحاور المنشورة</h3></div><div id="gOutcomes" class="outcomes"></div><div class="section-title"><h3>إنجازات مختارة</h3></div><div id="gAchievements" class="list"></div><div class="section-title"><h3>كتب ومواد مكتملة</h3></div><div id="gLearning" class="list"></div></div></div>
+    </section>
+  </main>
+</section>
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">—</h3><button id="closeModalBtn" class="icon-btn">✕</button></div><div id="modalBody"></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  const originalCreateClient = window.supabase.createClient.bind(window.supabase);
+  window.supabase.createClient = function(url,key,options={}){
+    const auth = Object.assign({}, options.auth || {}, {
+      storage: window.sessionStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: 'masari-tab-session'
+    });
+    return originalCreateClient(url,key,Object.assign({},options,{auth}));
+  };
+})();
+</script>
+<script src="https://thriving-salamander-129e1f.netlify.app/app.js"></script>
+</div>
+</body></html>
