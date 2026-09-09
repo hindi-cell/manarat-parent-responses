@@ -1,0 +1,32 @@
+/* Strong sweeping flashes across the whole site + flashes inside cards */
+.page-shell,.hero,.weekly-section,.main-content,.site-footer,.project-card,.weekly-event{position:relative;isolation:isolate}
+.hero::before,.hero::after,.weekly-section::before,.weekly-section::after,.main-content::before,.main-content::after,.site-footer::before{content:"";position:absolute;pointer-events:none;z-index:0;mix-blend-mode:screen}
+.hero-inner,.weekly-head,.weekly-timeline,.section-head,.projects-grid,.footer-inner,.project-card>*,.weekly-event>*{position:relative;z-index:1}
+
+.hero::before{top:-18%;left:-22%;width:46%;height:170%;background:linear-gradient(112deg,transparent 0%,rgba(216,164,59,0) 30%,rgba(216,164,59,.18) 42%,rgba(255,245,220,.42) 49%,rgba(15,95,97,.22) 57%,rgba(15,95,97,0) 70%,transparent 100%);transform:translateX(-128%) rotate(-10deg);animation:screenSweep 10.5s linear infinite}
+.hero::after{right:-16%;top:-8%;width:38%;height:120%;background:radial-gradient(circle at center,rgba(15,95,97,.24),rgba(15,95,97,.06) 42%,transparent 74%);filter:blur(3px);animation:orbPulse 7.8s ease-in-out infinite}
+
+.weekly-section::before{top:-10%;right:-24%;width:48%;height:150%;background:linear-gradient(118deg,transparent 0%,rgba(15,95,97,0) 26%,rgba(15,95,97,.16) 42%,rgba(196,250,255,.36) 50%,rgba(216,164,59,.18) 59%,rgba(216,164,59,0) 72%,transparent 100%);transform:translateX(128%) rotate(8deg);animation:screenSweepReverse 11.5s linear infinite;animation-delay:-3s}
+.weekly-section::after{bottom:-18%;left:-10%;width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,rgba(216,164,59,.23),rgba(216,164,59,.05) 42%,transparent 72%);filter:blur(5px);animation:orbPulse 8.7s ease-in-out infinite;animation-delay:-1.5s}
+
+.main-content::before{top:-7%;left:-25%;width:50%;height:165%;background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,0) 26%,rgba(255,255,255,.24) 37%,rgba(216,164,59,.17) 46%,rgba(15,95,97,.22) 54%,rgba(255,255,255,.24) 62%,transparent 75%);transform:translateX(-130%) rotate(-8deg);animation:screenSweep 12.8s linear infinite;animation-delay:-5s}
+.main-content::after{right:-7%;bottom:8%;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(15,95,97,.20),rgba(15,95,97,.04) 45%,transparent 74%);filter:blur(5px);animation:orbPulse 9.6s ease-in-out infinite}
+
+.site-footer::before{inset:auto 0 0 0;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(216,164,59,0) 22%,rgba(216,164,59,.10) 40%,rgba(255,255,255,.24) 50%,rgba(15,95,97,.12) 60%,rgba(15,95,97,0) 78%,transparent 100%);transform:translateX(-105%);animation:footerSweep 12s linear infinite}
+
+.project-card,.weekly-event{overflow:hidden}
+.project-card::before,.project-card::after,.weekly-event::before,.weekly-event::after{content:"";position:absolute;pointer-events:none;z-index:0;mix-blend-mode:screen}
+.project-card::before{inset:-24% auto -24% -48%;width:62%;background:linear-gradient(104deg,transparent 0%,rgba(255,255,255,0) 22%,rgba(255,255,255,.24) 39%,rgba(216,164,59,.21) 49%,rgba(15,95,97,.24) 59%,rgba(255,255,255,.12) 69%,transparent 84%);transform:translateX(-145%) rotate(-7deg);animation:cardSweep 6.8s linear infinite}
+.project-card::after{right:-40px;top:-40px;width:145px;height:145px;border-radius:50%;background:radial-gradient(circle,rgba(216,164,59,.20),rgba(216,164,59,.05) 42%,transparent 74%);filter:blur(3px);animation:cardPulse 5.8s ease-in-out infinite}
+.weekly-event::before{inset:-20% auto -20% -48%;width:66%;background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,0) 22%,rgba(255,255,255,.22) 40%,rgba(15,95,97,.25) 51%,rgba(216,164,59,.18) 61%,rgba(255,255,255,.10) 70%,transparent 84%);transform:translateX(-145%) rotate(-8deg);animation:cardSweep 6.2s linear infinite;animation-delay:-2s}
+.weekly-event::after{left:-28px;bottom:-28px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(15,95,97,.18),rgba(15,95,97,.04) 44%,transparent 74%);filter:blur(3px);animation:cardPulse 6.4s ease-in-out infinite;animation-delay:-1.5s}
+
+@keyframes screenSweep{0%{transform:translateX(-132%) rotate(-10deg);opacity:0}7%{opacity:.24}15%{opacity:.58}28%{transform:translateX(10%) rotate(-10deg);opacity:.28}42%{transform:translateX(132%) rotate(-10deg);opacity:0}100%{transform:translateX(132%) rotate(-10deg);opacity:0}}
+@keyframes screenSweepReverse{0%{transform:translateX(132%) rotate(8deg);opacity:0}7%{opacity:.22}16%{opacity:.52}30%{transform:translateX(-6%) rotate(8deg);opacity:.24}43%{transform:translateX(-132%) rotate(8deg);opacity:0}100%{transform:translateX(-132%) rotate(8deg);opacity:0}}
+@keyframes footerSweep{0%{transform:translateX(-108%);opacity:0}8%{opacity:.18}20%{opacity:.38}36%{transform:translateX(15%);opacity:.16}52%{transform:translateX(108%);opacity:0}100%{transform:translateX(108%);opacity:0}}
+@keyframes cardSweep{0%{transform:translateX(-150%) rotate(-7deg);opacity:0}8%{opacity:.14}20%{opacity:.46}45%{transform:translateX(70%) rotate(-7deg);opacity:.20}58%{transform:translateX(155%) rotate(-7deg);opacity:0}100%{transform:translateX(155%) rotate(-7deg);opacity:0}}
+@keyframes cardPulse{0%,100%{transform:scale(.9);opacity:.08}50%{transform:scale(1.10);opacity:.23}}
+@keyframes orbPulse{0%,100%{transform:scale(.9);opacity:.10}50%{transform:scale(1.14);opacity:.27}}
+
+@media(max-width:700px){.hero::before,.weekly-section::before,.main-content::before{width:72%}.project-card::before,.weekly-event::before{width:82%}.project-card::after{width:112px;height:112px}}
+@media(prefers-reduced-motion:reduce){.hero::before,.hero::after,.weekly-section::before,.weekly-section::after,.main-content::before,.main-content::after,.site-footer::before,.project-card::before,.project-card::after,.weekly-event::before,.weekly-event::after{animation:none!important;opacity:.08}}
