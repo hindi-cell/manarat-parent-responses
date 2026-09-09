@@ -59,15 +59,26 @@
   </div>
 
   <script>
-    (async function(){
-      const img=document.getElementById('manarat-brand-logo');
-      try{
-        const r=await fetch('assets/manarat-logo-b64.txt',{cache:'no-store'});
-        if(!r.ok) throw new Error('logo base64 file not found');
-        const b64=(await r.text()).trim();
-        img.src='data:image/png;base64,'+b64;
-      }catch(e){
-        img.src='assets/manarat-logo.png?v=3';
+    (async function () {
+      const img = document.getElementById('manarat-brand-logo');
+      try {
+        const files = [
+          'assets/logo-inline-v2/chunk-01.txt',
+          'assets/logo-inline-v2/chunk-02.txt',
+          'assets/logo-inline-v2/chunk-03.txt',
+          'assets/logo-inline-v2/chunk-04.txt',
+          'assets/logo-inline-v2/chunk-05.txt',
+          'assets/logo-inline-v2/chunk-06.txt',
+          'assets/logo-inline-v2/chunk-07.txt',
+          'assets/logo-inline-v2/chunk-08.txt'
+        ];
+        const responses = await Promise.all(files.map(file => fetch(file, { cache: 'no-store' })));
+        if (responses.some(response => !response.ok)) throw new Error('Missing logo chunk');
+        const parts = await Promise.all(responses.map(response => response.text()));
+        img.src = 'data:image/webp;base64,' + parts.map(part => part.trim()).join('');
+      } catch (error) {
+        console.error('Manarat logo failed to load', error);
+        img.style.display = 'none';
       }
     })();
   </script>
