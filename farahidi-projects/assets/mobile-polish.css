@@ -1,4 +1,5 @@
-/* Final phone polish — compact hero, cleaner logo contrast, full-card weekly swipe */
+/* Final phone polish — compact hero, cleaner logo contrast, obvious weekly swipe */
+.weekly-swipe-hint{display:none}
 @media(max-width:700px){
   .hero{padding:14px 0 25px!important}
   .hero-inner{position:relative;padding-inline:2px!important}
@@ -12,16 +13,19 @@
   .hero-divider i{width:7px;height:7px}
 
   .weekly-section{padding:23px 0 27px!important}
-  .weekly-head{margin-bottom:17px!important}
+  .weekly-head{margin-bottom:10px!important}
   .weekly-head .section-kicker{font-size:.78rem}
   .weekly-head h2{font-size:1.34rem!important;line-height:1.35!important;margin-top:3px!important}
   .weekly-head p{font-size:.86rem!important;line-height:1.65!important;max-width:37ch}
   .weekly-live{font-size:.73rem!important;padding:6px 9px!important;margin-top:10px!important;gap:7px!important;width:max-content;max-width:100%;line-height:1.45}
   .weekly-live span{width:7px;height:7px;flex:0 0 7px}
 
+  .weekly-swipe-hint{display:flex;align-items:center;justify-content:center;gap:7px;width:max-content;max-width:100%;margin:0 0 10px auto;padding:5px 10px;border-radius:999px;border:1px solid rgba(216,164,59,.32);background:rgba(216,164,59,.08);color:var(--gold);font-size:.72rem;font-weight:700;line-height:1.35;white-space:nowrap}
+  .weekly-swipe-hint .swipe-arrows{font-size:1rem;line-height:1;display:inline-block;animation:weeklySwipeCue 1.45s ease-in-out infinite}
+
   .weekly-timeline{display:flex!important;direction:rtl;overflow-x:auto!important;overflow-y:hidden;gap:10px!important;margin-inline:0!important;padding:2px 0 9px!important;scroll-snap-type:inline mandatory!important;scroll-padding-inline:0!important;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .weekly-timeline::-webkit-scrollbar{display:none}
-  .weekly-event{flex:0 0 calc(100% - 2px)!important;width:calc(100% - 2px)!important;max-width:none!important;min-width:0!important;scroll-snap-align:center!important;scroll-snap-stop:always;min-height:132px!important;padding:15px 14px 13px!important;border-radius:16px!important}
+  .weekly-event{flex:0 0 87%!important;width:87%!important;max-width:87%!important;min-width:0!important;scroll-snap-align:start!important;scroll-snap-stop:always;min-height:132px!important;padding:15px 14px 13px!important;border-radius:16px!important;box-shadow:0 8px 26px rgba(0,0,0,.08)}
   .weekly-event::before{top:22px!important;right:16px!important}
   .weekly-event.is-next::after{top:10px!important;left:10px!important;font-size:.68rem!important;padding:3px 7px!important}
   .weekly-day{font-size:.79rem!important;margin-right:23px!important;margin-bottom:6px!important}
@@ -42,15 +46,19 @@
   .ambient-flash{opacity:.10!important}
 }
 
+@keyframes weeklySwipeCue{0%,100%{transform:translateX(0);opacity:.8}50%{transform:translateX(-5px);opacity:1}}
+
 @media(max-width:420px){
   .hero{padding-top:12px!important}
   .hero .brand-logo{width:min(154px,50vw)!important;max-height:98px!important}
   .hero h1{font-size:1.56rem!important}
   .hero p{font-size:.85rem!important;max-width:32ch}
   .weekly-head h2{font-size:1.27rem!important}
-  .weekly-event{flex-basis:calc(100% - 2px)!important;width:calc(100% - 2px)!important}
+  .weekly-swipe-hint{font-size:.68rem;padding:5px 8px}
+  .weekly-event{flex-basis:85%!important;width:85%!important;max-width:85%!important}
 }
 
 @media(prefers-reduced-motion:reduce){
   .hero-inner::before{filter:none}
+  .weekly-swipe-hint .swipe-arrows{animation:none}
 }
