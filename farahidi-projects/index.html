@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#0f5f61" />
   <title>مشاريع مؤسسة الفراهيدي</title>
   <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/enhancements.css" />
 </head>
 <body>
   <div class="page-shell">
@@ -20,6 +21,22 @@
         <div class="hero-divider"><span></span><i></i><span></span></div>
       </div>
     </header>
+
+    <section id="weekly-programs" class="weekly-section" aria-labelledby="weekly-title">
+      <div class="container">
+        <div class="weekly-head">
+          <div>
+            <span class="section-kicker">هذا الأسبوع في منارات</span>
+            <h2 id="weekly-title">المواعيد الأسبوعية الثابتة</h2>
+            <p>نظرة سريعة على مواعيد البرامج المستمرة، مع إظهار الموعد الأقرب تلقائيًا.</p>
+          </div>
+          <div class="weekly-live"><span></span> يتحدث تلقائيًا حسب اليوم</div>
+        </div>
+        <div id="weekly-timeline" class="weekly-timeline" aria-live="polite">
+          <div class="weekly-loading">جاري ترتيب البرنامج الأسبوعي…</div>
+        </div>
+      </div>
+    </section>
 
     <main class="container main-content">
       <section class="section-head">
@@ -52,7 +69,7 @@
 
   <div id="details-modal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" data-close-modal></div>
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-panel modal-panel-project" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <button class="modal-close" type="button" data-close-modal aria-label="إغلاق">×</button>
       <div id="modal-content"></div>
     </div>
