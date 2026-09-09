@@ -13,7 +13,7 @@
       <div class="hero-ornament hero-ornament-top"></div>
       <div class="hero-ornament hero-ornament-bottom"></div>
       <div class="hero-inner container">
-        <img class="brand-logo" src="assets/manarat-logo.png" alt="شعار مركز منارات" />
+        <img id="manarat-brand-logo" class="brand-logo" alt="شعار مركز منارات" style="display:block;width:min(250px,64vw);max-height:175px;object-fit:contain;margin:0 auto 10px;" />
         <span class="eyebrow">البوابة الرسمية للمشاريع</span>
         <h1 id="site-title">مشاريع مؤسسة الفراهيدي</h1>
         <p id="site-subtitle">برامج ومشاريع تربوية وتعليمية متخصصة لبناء الطالب وتنمية مهاراته.</p>
@@ -58,6 +58,19 @@
     </div>
   </div>
 
+  <script>
+    (async function(){
+      const img=document.getElementById('manarat-brand-logo');
+      try{
+        const r=await fetch('assets/manarat-logo-b64.txt',{cache:'no-store'});
+        if(!r.ok) throw new Error('logo base64 file not found');
+        const b64=(await r.text()).trim();
+        img.src='data:image/png;base64,'+b64;
+      }catch(e){
+        img.src='assets/manarat-logo.png?v=3';
+      }
+    })();
+  </script>
   <script type="module" src="assets/app.js"></script>
 </body>
 </html>
